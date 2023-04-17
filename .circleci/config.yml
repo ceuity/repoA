@@ -1,40 +1,37 @@
 version: 2.1
 
+executors:
+  my-executor:
+    working_directory: /tmp/repo
+
 orbs:
   github-cli: circleci/github-cli@2.2.0
 
-workflows:
-  version: 2
-  # 릴리스 트리거 워크플로우 정의
-  trigger_release_workflow:
-    jobs:
-      - trigger_release:
-          # A 저장소 이름과 원하는 릴리스 태그 설정
-          repo: ceuity/repoA
-          release_tag: v1.0.0
-          context: "Create Release in B"
-          filters:
-            branches:
-              ignore:
-                - /.*/
-
 jobs:
   trigger_release:
-    executor: trigger_release
+    executor: my-executor
     steps:
-      - github/create-release:
-          # B 저장소 이름과 릴리스를 생성하는 데 필요한 정보 설정
-          owner: ceuity
-          repo: repoB
-          tag_name: "${{releases.release_tag}}"
-          name: "Release ${{releases.release_tag}}"
-          body: "Release ${{releases.release_tag}}"
-          draft: false
-          prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - github-cli/install
+      - run:
+          name: Login Github
+          command: |
+            gh auth login --with-token ${GITHUB_TOKEN}
+      - run:
+          name: Trigger release
+          command: |
+            gh api repos/${CIRCLE_PROJECT_USERNAME}/${TARGET_REPO}/releases \
+              -X POST \
+              -f tag_name=${CIRCLE_TAG} \
+              -f target_commitish=${CIRCLE_SHA1} \
+              -f name=${CIRCLE_TAG} \
+              -f body="Release ${CIRCLE_TAG} from ${CIRCLE_PROJECT_REPONAME}" \
+              -f draft=false \
+              -f prerelease=false
 
-executors:
-  trigger_release:
-    docker:
-      - image: circleci/node:12
-    working_directory: ~/repo
+workflows:
+  release:
+    jobs:
+      - trigger_release:
+          filters:
+            tags:
+              only: /^v.*/
