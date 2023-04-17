@@ -1,8 +1,7 @@
 version: 2.1
 
 orbs:
-  # 사용할 Orb 추가
-  circleci/github@2.3.0
+  github-cli: circleci/github-cli@2.2.0
 
 workflows:
   version: 2
