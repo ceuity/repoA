@@ -10,6 +10,7 @@ orbs:
 jobs:
   trigger_release:
     executor: my-executor
+    machine: true
     steps:
       - github-cli/install
       - run:
