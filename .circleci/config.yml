@@ -30,9 +30,10 @@ jobs:
               -f prerelease=false
 
 workflows:
-  release:
+  release-flow:
     jobs:
       - trigger_release:
+          context: default
           filters:
             tags:
               only: /^v.*/
