@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Login Github
           command: |
-            gh auth login --with-token ${GITHUB_TOKEN}
+            gh auth login
       - run:
           name: Trigger release
           command: |
