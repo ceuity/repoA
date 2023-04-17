@@ -14,18 +14,14 @@ jobs:
     steps:
       - github-cli/setup
       - run:
-          name: Login Github
-          command: |
-            gh auth login
-      - run:
           name: Trigger release
           command: |
             gh api repos/${CIRCLE_PROJECT_USERNAME}/${TARGET_REPO}/releases \
               -X POST \
-              -f tag_name=${CIRCLE_TAG} \
-              -f target_commitish=${CIRCLE_SHA1} \
-              -f name=${CIRCLE_TAG} \
-              -f body="Release ${CIRCLE_TAG} from ${CIRCLE_PROJECT_REPONAME}" \
+              -f tag_name=${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} \
+              -f target_commitish=main \
+              -f name=${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} \
+              -f body="Release ${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} from ${CIRCLE_PROJECT_REPONAME}" \
               -f draft=false \
               -f prerelease=false
 
@@ -35,5 +31,7 @@ workflows:
       - trigger_release:
           context: default
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
