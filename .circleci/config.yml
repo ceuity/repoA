@@ -18,12 +18,12 @@ jobs:
           command: |
             gh api repos/${CIRCLE_PROJECT_USERNAME}/${TARGET_REPO}/releases \
               -X POST \
-              -f tag_name=${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} \
-              -f target_commitish=main \
-              -f name=${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} \
-              -f body="Release ${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} from ${CIRCLE_PROJECT_REPONAME}" \
-              -f draft=false \
-              -f prerelease=false
+              -F tag_name=${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} \
+              -F target_commitish=main \
+              -F name=${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} \
+              -F body="Release ${CIRCLE_PROJECT_REPONAME}${CIRCLE_TAG} from ${CIRCLE_PROJECT_REPONAME}" \
+              -F draft=false \
+              -F prerelease=false
 
 workflows:
   release-flow:
