@@ -12,7 +12,7 @@ jobs:
     executor: my-executor
     machine: true
     steps:
-      - github-cli/install
+      - github-cli/setup
       - run:
           name: Login Github
           command: |
